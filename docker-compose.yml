@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  config-deliver-client:
+    image: hjmcloud/config-deliver-client:latest
+    container_name: config-deliver-client
+    restart: always
+    volumes:
+      - ./config.yaml:/app/config.yaml
+      - ./localDir:/app/localDir
+    environment:
+      - TZ=Asia/Shanghai
+      

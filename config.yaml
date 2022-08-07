@@ -1,0 +1,11 @@
+logger:
+  level: "info" 
+  stdout: true 
+
+apiServer: http://xjp.lidong.xin:8000/getconfig # api server address
+tasks:
+  - name: "5472E3F6-37DE-B9A0-899C-39838E8C1336" # 任务名称
+    file: "*" # 文件名
+    corn: "@every 1m" # corn表达式
+    localDir: "./localDir/5472E3F6-37DE-B9A0-899C-39838E8C1336" # 本地目录
+    isRunOnStart: true # 是否启动时执行一次
