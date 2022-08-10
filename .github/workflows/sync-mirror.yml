@@ -1,0 +1,46 @@
+# 同步仓库镜像 From: Github Repository
+# Path: .github/workflows/sync-mirror.yml
+# 需配置环境变量: REMOTE: 远程仓库地址, 例如: git@gitee.com:hjmcloud/hjm-certcheck.git
+# 使用到的action: actions/checkout@v3, yesolutions/mirror-action@v0.6.0
+# actions/checkout@v3: https://github.com/marketplace/actions/checkout
+# yesolutions/mirror-action@v0.6.0: https://github.com/marketplace/actions/mirror-repository
+name: Sync Mirror
+on:
+  push:
+    tags:
+      - v*
+env:
+  TZ: Asia/Shanghai
+  REMOTE: git@gitee.com:hjmcloud/config-deliver-client.git # 这里配置git仓库地址
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # 任务名称  RepoMirror
+  RepoMirro:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # 这里要把检出深度设置为0，否则会报错
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      # 同步仓库镜像
+      - name: mirror-repository
+        # You may pin to the exact commit or the version.
+        # uses: yesolutions/mirror-action@082a9611ed4b64c796245a62b34584ee2ded6833
+        uses: yesolutions/mirror-action@v0.6.0
+        with:
+          # The remote repository e.g. https://github.com/octocat/foo.git or git@github.com:octocat/foo.git
+          REMOTE: ${{env.REMOTE}} # optional
+          # The ssh private key for writing to the remote repository, if using ssh
+          GIT_SSH_PRIVATE_KEY: ${{ secrets.PRIVATEKEY }} # optional
+          # if true, skips host key verification. Mutually exclusive with GIT_SSH_KNOWN_HOSTS
+          GIT_SSH_NO_VERIFY_HOST: true # optional, default is false
+          # Push all refs instead of just the current branch
+          PUSH_ALL_REFS: true # optional, default is true
+          # The arugments to use when pushing the repository
+          GIT_PUSH_ARGS: --tags --force --prune # optional, default is --tags --force --prune
+          # set to "true" to enable debug mode
+          DEBUG: false # optional, default is false
